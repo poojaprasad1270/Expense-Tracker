@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Expense Tracker</string>
+    <string name="login">LOGIN</string>
+    <string name="name">Expense Tracker</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="enter_your_name">Enter Your Name</string>
+    <string name="password">Enter Password</string>
+    <string name="Register">REGISTER</string>
+
+    <string name="todo">TODO</string>
+    <string name="logout">logout</string>
+    <string name="create_account">Create Account</string>
+
+    <string name="add_expenditure">Add Expenditure</string>
+    <string name="expenditure">Expenditure:</string>
+    <string name="earnings">Earnings:</string>
+    <string name="overall">Overall:</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_income">Add Income</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="enter_date">Enter Date</string>
+    <string name="pick_date">pick Date</string>
+
+</resources>
