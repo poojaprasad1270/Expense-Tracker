@@ -46,7 +46,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
@@ -241,29 +243,24 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
             captureImageData(data);
         }
     }
-    private void  captureImageData( Intent data){
+    private void  captureImageData( Intent data)
+    {
         Bitmap thumb = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumb.compress(Bitmap.CompressFormat.JPEG,90,bytes);
         byte bb[] = bytes.toByteArray();
 
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_.jpg";
 
-       final StorageReference ref =  FirebaseStorage.getInstance().getReference(firebaseUser.getUid()).child("twmp.jpg");
+       final StorageReference ref =  FirebaseStorage.getInstance().getReference(firebaseUser.getUid()).child(imageFileName);
         ref.putBytes(bb).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Toast.makeText(getApplicationContext(),uri.toString(),Toast.LENGTH_LONG).show();
-                    }
-                });
+                Toast.makeText(getApplicationContext(),"Image Uploded",Toast.LENGTH_LONG).show();
 
             }
         });
-
-
-
 
     }
 
