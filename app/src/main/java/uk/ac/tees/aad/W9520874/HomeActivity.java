@@ -5,25 +5,20 @@ import androidx.annotation.Nullable;
 import  androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +28,6 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -65,6 +59,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
     TextView inc;
     TextView total;
     int income=0;
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +70,8 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         total = findViewById(R.id.totalText);
         mAuth = FirebaseAuth.getInstance();
         firebaseUser =mAuth.getCurrentUser();
+        progressBar = findViewById(R.id.progressBar4);
+
         Button date = findViewById(R.id.monthly);
 
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -83,6 +80,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
                 askCameraPermissions();
             }
         });
@@ -98,8 +96,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-
-
+        progressBar.setVisibility(View.VISIBLE);
         FirebaseDatabase.getInstance().getReference("incomes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -148,6 +145,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         pie.data(data);
         AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view2);
         anyChartView.setChart(pie);
+        progressBar.setVisibility(View.INVISIBLE);
     }
 
 
@@ -251,14 +249,14 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         byte bb[] = bytes.toByteArray();
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_.jpg";
+        String imageFileName = "J" + timeStamp + "i.jpg";
 
        final StorageReference ref =  FirebaseStorage.getInstance().getReference(firebaseUser.getUid()).child(imageFileName);
         ref.putBytes(bb).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 Toast.makeText(getApplicationContext(),"Image Uploded",Toast.LENGTH_LONG).show();
-
+                progressBar.setVisibility(View.INVISIBLE);
             }
         });
 

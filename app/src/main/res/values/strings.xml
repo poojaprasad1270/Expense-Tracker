@@ -27,5 +27,6 @@
     <string name="total">total</string>
     <string name="textview">TextView</string>
     <string name="addimage">AddImage</string>
+    <string name="add_bill">Add Bill</string>
 
 </resources>
