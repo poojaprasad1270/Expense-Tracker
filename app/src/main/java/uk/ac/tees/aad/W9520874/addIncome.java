@@ -54,7 +54,6 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 uk.ac.tees.aad.W9520874.DatePicker mDatePickerDialogFragment;
                 mDatePickerDialogFragment = new uk.ac.tees.aad.W9520874.DatePicker();
                 mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
@@ -93,10 +92,8 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
                     return;
                 }
 
-               String[] d =  date.getText().toString().split(",");
-               String month = d[1].split(" ")[1];
-
-                Income inc = new Income(Integer.parseInt(amount.getText().toString()),month+","+d[2].trim());
+               String[] d =  date.getText().toString().split("-");
+                Income inc = new Income(Integer.parseInt(amount.getText().toString()),d[1]+"-"+d[2]);
                 FirebaseDatabase.getInstance().getReference("incomes").child(user.getUid()).push().setValue(inc).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -116,12 +113,7 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar mCalender = Calendar.getInstance();
-        mCalender.set(Calendar.YEAR, year);
-        mCalender.set(Calendar.MONTH, month);
-        mCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
-        date.setText(selectedDate);
+        date.setText(dayOfMonth+"-"+(month+1)+"-"+year);
     }
 
 

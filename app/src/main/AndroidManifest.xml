@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".addExpenditure"></activity>
+        <activity android:name=".monthlyTrans"></activity>
+        <activity android:name=".addExpenditure" />
         <activity android:name=".addIncome" />
         <activity android:name=".SplashScreen">
             <intent-filter>

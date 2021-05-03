@@ -3,11 +3,13 @@ package uk.ac.tees.aad.W9520874;
 import androidx.annotation.NonNull;
 import  androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.anychart.AnyChart;
@@ -25,7 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     FirebaseAuth mAuth;
     FirebaseUser firebaseUser;
@@ -43,24 +45,32 @@ public class HomeActivity extends AppCompatActivity {
         total = findViewById(R.id.totalText);
         mAuth = FirebaseAuth.getInstance();
         firebaseUser =mAuth.getCurrentUser();
+        Button date = findViewById(R.id.monthly);
 
         redirections();
+
+
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uk.ac.tees.aad.W9520874.DatePicker mDatePickerDialogFragment;
+                mDatePickerDialogFragment = new uk.ac.tees.aad.W9520874.DatePicker();
+                mDatePickerDialogFragment.show(getSupportFragmentManager(), "DATE PICK");
+            }
+        });
+
+
 
         FirebaseDatabase.getInstance().getReference("incomes").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 income=0;
-
-
                 for(DataSnapshot snap: snapshot.getChildren()){
-                    income = income+  snap.getValue(Income.class).amount;
+                    income = income +  snap.getValue(Income.class).amount;
                 }
-
                 FirebaseDatabase.getInstance().getReference("expenses").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
                         int out = 0;
                         for(DataSnapshot snap: snapshot.getChildren()){
                             out = out+  snap.getValue(Income.class).amount;
@@ -70,14 +80,12 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
 
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -99,9 +107,8 @@ public class HomeActivity extends AppCompatActivity {
         data.add(new ValueDataEntry("Expenditure", Exp));
         data.add(new ValueDataEntry("Income", income));
         pie.data(data);
-        AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view);
+        AnyChartView anyChartView = (AnyChartView) findViewById(R.id.any_chart_view2);
         anyChartView.setChart(pie);
-
     }
 
 
@@ -110,20 +117,14 @@ public class HomeActivity extends AppCompatActivity {
         inc.setText("Earnings: "+income);
         total.setText((income-Exp)+" ");
         if ((income-Exp)<0)
-        {
             total.setTextColor(Color.RED);
-
-        }else
-        {
-            total.setTextColor(Color.BLUE);
-        }
-
+        else
+            total.setTextColor(Color.GREEN);
     }
+
 
     @Override
     public void onBackPressed() {
-
-
        finishAffinity();
         finish();
     }
@@ -154,5 +155,15 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(),addExpenditure.class));
             }
         });
+    }
+
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        Intent intent = new Intent(getApplicationContext(),monthlyTrans.class);
+        intent.putExtra("month",month+1);
+        intent.putExtra("year",year);
+        startActivity(intent);
     }
 }

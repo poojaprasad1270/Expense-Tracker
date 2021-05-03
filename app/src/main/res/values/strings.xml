@@ -23,5 +23,8 @@
     <string name="enter_amount">Enter Amount</string>
     <string name="enter_date">Enter Date</string>
     <string name="pick_date">pick Date</string>
+    <string name="view_monthly_expenses">View Monthly Expenses</string>
+    <string name="total">total</string>
+    <string name="textview">TextView</string>
 
 </resources>

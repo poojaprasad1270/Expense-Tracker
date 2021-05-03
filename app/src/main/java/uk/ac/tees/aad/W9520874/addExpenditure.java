@@ -93,10 +93,9 @@ public class addExpenditure extends AppCompatActivity implements DatePickerDialo
                     return;
                 }
 
-                String[] d =  date.getText().toString().split(",");
-                String month = d[1].split(" ")[1];
+                String[] d =  date.getText().toString().split("-");
 
-                Income inc = new Income(Integer.parseInt(amount.getText().toString()),month+","+d[2].trim());
+                Income inc = new Income(Integer.parseInt(amount.getText().toString()),d[1]+"-"+d[2]);
                 FirebaseDatabase.getInstance().getReference("expenses").child(user.getUid()).push().setValue(inc).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -116,11 +115,7 @@ public class addExpenditure extends AppCompatActivity implements DatePickerDialo
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        Calendar mCalender = Calendar.getInstance();
-        mCalender.set(Calendar.YEAR, year);
-        mCalender.set(Calendar.MONTH, month);
-        mCalender.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
-        date.setText(selectedDate);
+
+        date.setText(dayOfMonth+"-"+(month+1)+"-"+year);
     }
 }
