@@ -92,8 +92,6 @@ public class monthlyTrans extends AppCompatActivity {
         else
             totalView.setTextColor(Color.GREEN);
 
-        
-
         month.setText(str);
     }
 

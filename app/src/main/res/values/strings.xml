@@ -26,5 +26,6 @@
     <string name="view_monthly_expenses">View Monthly Expenses</string>
     <string name="total">total</string>
     <string name="textview">TextView</string>
+    <string name="addimage">AddImage</string>
 
 </resources>
