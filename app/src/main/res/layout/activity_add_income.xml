@@ -50,7 +50,6 @@
             android:layout_marginTop="16dp"
             android:ems="10"
             android:hint="@string/pick_date"
-            android:inputType="date"
             app:layout_constraintBottom_toTopOf="@+id/submitbtnInc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

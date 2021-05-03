@@ -36,20 +36,20 @@
             android:ems="10"
             android:hint="@string/enter_amount"
             android:inputType="number"
+            android:gravity="center"
             app:layout_constraintBottom_toTopOf="@+id/dateInc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:importantForAutofill="no" />
 
-        <EditText
+        <Button
             android:id="@+id/dateInc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:ems="10"
-            android:hint="@string/enter_date"
-            android:inputType="date"
+            android:hint="@string/pick_date"
             app:layout_constraintBottom_toTopOf="@+id/submitbtnInc"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

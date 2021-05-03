@@ -5,12 +5,16 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +32,7 @@ import java.util.Date;
 public class addIncome extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
 
     TextView amount ;
-    TextView date;
+    Button date;
     FirebaseUser user;
     FirebaseAuth mAuth;
     TextView tview;
@@ -41,9 +45,7 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
-
         tview = findViewById(R.id.addExpText);
-
         amount = findViewById(R.id.amountInc);
         date = findViewById(R.id.dateInc);
         Button btn = findViewById(R.id.submitbtnInc);
@@ -59,36 +61,57 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
             }
         });
 
-        FirebaseDatabase.getInstance().getReference("incomes").child(user.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int out = 0;
-                for(DataSnapshot snap: snapshot.getChildren()){
-                    out = out+  snap.getValue(Income.class).amount;
-                }
-                tview.setText(out+" ");
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
 
         FirebaseDatabase.getInstance().getReference("incomes").child(user.getUid()).push();
 
         btn.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                if(amount.getText().toString().isEmpty()){
+                    amount.setError("Enter Value");
+                    amount.findFocus();
+                    return;
+                }
+                if (date.getText().toString().isEmpty()){
+                    date.setError("select");
+                    date.findFocus();
+                    return;
+                }
+                try {
+                    if(Integer.parseInt(amount.getText().toString())<=0)
+                    {
+                        amount.setError("Enter Value");
+                        amount.findFocus();
+                        return;
+                    }
+                }catch (Exception e)
+                {
+                    amount.setError("Enter Correct Details");
+                    amount.findFocus();
+                    return;
+                }
 
-                Income inc = new Income(Integer.parseInt(amount.getText().toString()),"hai" +
-                        "");
+               String[] d =  date.getText().toString().split(",");
+               String month = d[1].split(" ")[1];
 
-                FirebaseDatabase.getInstance().getReference("incomes").child(user.getUid()).push().setValue(inc);
-
-
+                Income inc = new Income(Integer.parseInt(amount.getText().toString()),month+","+d[2].trim());
+                FirebaseDatabase.getInstance().getReference("incomes").child(user.getUid()).push().setValue(inc).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getApplicationContext(),"Added Income Value",Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+
+       startActivity(new Intent(getApplicationContext(),HomeActivity.class));
     }
 
     @Override
@@ -100,4 +123,6 @@ public class addIncome extends AppCompatActivity implements DatePickerDialog.OnD
         String selectedDate = DateFormat.getDateInstance(DateFormat.FULL).format(mCalender.getTime());
         date.setText(selectedDate);
     }
+
+
 }
