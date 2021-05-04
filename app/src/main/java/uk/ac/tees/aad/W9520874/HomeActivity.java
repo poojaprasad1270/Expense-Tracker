@@ -38,8 +38,15 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +67,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
     TextView total;
     int income=0;
     ProgressBar progressBar;
+    TextView usdt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +79,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         mAuth = FirebaseAuth.getInstance();
         firebaseUser =mAuth.getCurrentUser();
         progressBar = findViewById(R.id.progressBar4);
+        usdt = findViewById(R.id.usdt);
 
         Button date = findViewById(R.id.monthly);
 
@@ -113,6 +122,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
                         }
                         setPiechart(income,out);
                         setTextDashboard(income,out);
+
                     }
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
@@ -157,6 +167,7 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
             total.setTextColor(Color.RED);
         else
             total.setTextColor(Color.GREEN);
+        getUsdt(income-Exp);
     }
 
 
@@ -261,5 +272,41 @@ public class HomeActivity extends AppCompatActivity implements DatePickerDialog.
         });
 
     }
+
+    private void getUsdt(int cur){
+        OkHttpClient client = new OkHttpClient();
+
+
+        Request request = new Request.Builder()
+                .url("https://currency-converter5.p.rapidapi.com/currency/convert?format=json&from=GBP&to=USD&amount="+cur)
+                .get()
+                .addHeader("x-rapidapi-key", "92e343abc4msh89e50e4d386f63ep14d7f1jsnfbcb99886fb1")
+                .addHeader("x-rapidapi-host", "currency-converter5.p.rapidapi.com")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                final String res = response.body().string();
+                HomeActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JsonObject jsonObject = new JsonParser().parse(res).getAsJsonObject();
+                       String value =  jsonObject.get("rates").getAsJsonObject().get("USD").getAsJsonObject().get("rate_for_amount").getAsString();
+                        usdt.setText("USD "+value);
+
+                    }
+                });
+            }
+        });
+    }
+
+
+
 
 }
